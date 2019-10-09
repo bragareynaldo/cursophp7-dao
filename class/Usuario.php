@@ -1,60 +1,87 @@
 <?php  
 
-/// essa classe traz todas as funcoes do PDO
-class Sql extends PDO {
+Class Usuario {
 
-	// protegendo a conexao = apenas esta classe ve
-	Private $conn;
+	Private $idusuario;
+	Private $deslogin;
+	Private $dessenha;
+	Private $dtcadastro;
 
-    // função para conectar automaticamente ao banco
-	Public function __construct() {
+	Public function getIdusuario() {
 
-		$this->conn= New PDO("sqlsrv:Database=dbphp7;server=localhost\SQLEXPRESS;connectionPooling=0","sa","joshua");
+		return $this->idusuario;
+	}
+	Public function setIdusuario($value) {
+
+		$this->idusuario=$value;
 	}
 
-	Private function setParams($statment,$parameters=array()) {
+	Public function getDeslogin() {
 
-		foreach ($parameters as $key => $value) {
+		return $this->deslogin;
+	}
+	Public function setDeslogin($value) {
 
-			$this->setParam($key,$value);
-		
+		$this->deslogin=$value;
+	}
+	Public function getDessenha() {
+
+		return $this->dessenha;
+	}
+	Public function setDessenha($value) {
+
+		$this->dessenha=$value;
+	}
+
+	Public function getDtcadastro() {
+
+		return $this->dtcadastro;
+	}
+	Public function setDtcadastro($value) {
+
+		$this->dtcadastro=$value;
+	}
+
+	/// um metodo para carregar um registro do banco
+
+	Public function loadByid($id) {
+
+		$sql= New Sql();
+		$result=$sql->select("SELECT * FROM tb_usuarios where idusuario=:ID", array(
+			":ID"=>$id
+
+		));
+
+		if(count($result)>0) {
+
+			/// vou pegar a primeira linha do array - posicao zero
+
+			$row= $result[0];
+
+			// vou mandar os dados para os meus gets e sets
+
+			$this->setIdusuario($row["idusuario"]);
+			$this->setDeslogin($row["deslogin"]);
+			$this->setDessenha($row["dessenha"]);
+			$this->setDtcadastro(New Datetime($row["dtcadastro"]));
+
 		}
-
 	}
 
-	// para apenas receber um valor e nao um array
-	Private function setParam($statment,$key,$value) {
+	Public function __toString() {
 
-		$statment->bindParam($key,$value);
+		return json_encode(array(
+			"idusuario"=>$this->getIdusuario(),
+			"deslogin"=>$this->getDeslogin(),
+			"dessenha"=>$this->getDessenha(),
+			"dtcadastro"=>$this->getDtcadastro()->format("d/m/Y H:i:s")
 
+
+
+
+
+		));
 	}
-
-	// $rawquery - recebe a query bruta , $param ja sabemos que recebermos um array
-	Public function query($rawquery,$params=array()) {
-
-		$stmt=$this->conn->prepare($rawquery);
-
-		$this->setParams($stmt,$params);
-
-		$stmt->execute();
-
-		return $stmt;
-	
-
-	}
-
-	Public function Select($rawquery,$params=array()):array 
-	{
-
-		$stmt=$this->query($rawquery,$params);
-
-		return $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-
-	}
-
-
 }
-
 
 ?>
