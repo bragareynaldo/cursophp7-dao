@@ -8,7 +8,13 @@ class Sql extends PDO {
     // função para conectar automaticamente ao banco
 	Public function __construct() {
 
+		// SQLSERVER
 		$this->conn= New PDO("sqlsrv:Database=dbphp7;server=localhost\SQLEXPRESS;connectionPooling=0","sa","joshua");
+
+		//MYSQL
+		//$this->conn= New PDO("mysql:dbname=dbphp7;host=localhost","root","");
+		
+
 	}
 
 	Private function setParams($statment,$parameters=array()) {

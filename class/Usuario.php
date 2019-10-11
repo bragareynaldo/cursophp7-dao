@@ -56,14 +56,16 @@ Class Usuario {
 
 			/// vou pegar a primeira linha do array - posicao zero
 
-			$row= $result[0];
+			//$row= $result[0];
 
 			// vou mandar os dados para os meus gets e sets
 
-			$this->setIdusuario($row["idusuario"]);
-			$this->setDeslogin($row["deslogin"]);
-			$this->setDessenha($row["dessenha"]);
-			$this->setDtcadastro(New Datetime($row["dtcadastro"]));
+			$this->setData($result[0]);
+			
+			//$this->setIdusuario($row["idusuario"]);
+			//$this->setDeslogin($row["deslogin"]);
+			//$this->setDessenha($row["dessenha"]);
+			//$this->setDtcadastro(New Datetime($row["dtcadastro"]));
 
 		}
 	}
@@ -76,6 +78,14 @@ Class Usuario {
 		return $sql->select("SELECT * FROM tb_usuarios ORDER BY deslogin");
 
 	}
+    
+    Public static function getUltimo() {
+
+		$sql=New Sql();
+		return $sql->select("SELECT * FROM tb_usuarios where idusuario=(SELECT MAX(idusuario) FROM tb_usuarios)");
+
+	}
+
 
 	Public static function search($login) {
 		$sql=New Sql();
@@ -102,14 +112,16 @@ Class Usuario {
 
 			/// vou pegar a primeira linha do array - posicao zero
 
-			$row= $result[0];
+			//$row= $result[0];
 
 			// vou mandar os dados para os meus gets e sets
 
-			$this->setIdusuario($row["idusuario"]);
-			$this->setDeslogin($row["deslogin"]);
-			$this->setDessenha($row["dessenha"]);
-			$this->setDtcadastro(New Datetime($row["dtcadastro"]));
+			$this->setData($result[0]);
+
+			//$this->setIdusuario($row["idusuario"]);
+			//$this->setDeslogin($row["deslogin"]);
+			//$this->setDessenha($row["dessenha"]);
+			//$this->setDtcadastro(New Datetime($row["dtcadastro"]));
 
 		}else {
 
@@ -117,6 +129,96 @@ Class Usuario {
 			
 		}
 		
+
+
+	}
+
+	Public function setData($data){
+
+		$this->setIdusuario($data["idusuario"]);
+		$this->setDeslogin($data["deslogin"]);
+		$this->setDessenha($data["dessenha"]);
+		$this->setDtcadastro(New Datetime($data["dtcadastro"]));
+
+
+
+	}
+
+
+	/// classe para inserir novo registro
+
+	Public function insert(){
+
+		$sql=New Sql();
+
+		// para mysql - FUNCIONA OK
+		//$result = $sql->select("CALL sp_usuarios_insert(:LOGIN,:PASSWORD)", array(
+
+		// para sqlserver - NAO ESTAVA FUNCIONANDO
+		//$result = $sql->select("EXECUTE sp_usuarios_insert(:LOGIN,:PASSWORD)", array(			
+
+		// vamos testar sem procedures
+		$result = $sql->select("INSERT INTO tb_usuarios (deslogin,dessenha) VALUES (:LOGIN,:PASSWORD)", array(			
+
+
+			":LOGIN"=>$this->getDeslogin(),
+			":PASSWORD"=>$this->getDessenha()	
+
+		));
+        
+        // comecando uma solução de select
+        // criei o getUltimo para obter o ultimo registro gravado
+        $sql=New Sql();
+        $result=Usuario::getUltimo();
+
+
+		/// acho que o erro é porque apos insert não ha select em cursor para display
+		/// modificar o sp_ para uma função dentro da aplicação
+		/// toda vez que incluir ou alterar dar refresh no array
+
+		
+		if(count($result)>0) {
+
+			
+			$this->setData($result[0]);
+
+
+		}else {
+			
+
+			throw new Exception("Erro na Inclusao.");
+		}
+		
+	}
+
+	Public function update($login,$password){
+
+		$this->setDeslogin($login);
+		$this->setDessenha($password);
+
+
+		$sql=New Sql();
+		$sql->query("UPDATE tb_usuarios SET deslogin=:LOGIN , dessenha=:PASSWORD WHERE idusuario=:ID",array(
+
+			':LOGIN'=>$this->getDeslogin(),
+			':PASSWORD'=>$this->getDessenha(),
+			':ID'=>$this->getIdusuario()
+
+		));
+
+
+
+	}
+
+
+
+	// colocado ="" para nao se tornar obrigatorio o conteudo da variavel em referencia
+	// se nao tivesse forçaria a enviar um conteudo para executar o metodo __construct
+
+	Public function __construct($login="",$password="") {
+
+		$this->setDeslogin($login);
+		$this->setDessenha($password);
 
 
 	}

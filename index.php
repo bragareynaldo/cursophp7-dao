@@ -31,14 +31,43 @@ echo json_encode($usuarios); */
 
 // autenticar um usuario 
 
-$log="REY";
+/*$log="REY";
 $pass="456";
 
 $usuario = New Usuario();
 $usuario->login($log,$pass);
 //echo json_encode($usuario);
+echo $usuario;*/
+
+
+
+$executa=1;
+
+if($executa=0) { 
+
+// inserindo usuario novo
+$aluno= New Usuario('Braga','tw234');
+// como botei um metodo construtor em Usuario, basta refenciar
+// nao precisa usar 2 $aluno e etc abaixo
+//$aluno->setDeslogin('sp_SQL'); nao entra 
+//$aluno->setDessenha('teste1'); nao entra
+$aluno->insert();
+echo $aluno;
+}
+
+// alterando um ususario
+
+if ($executa=1) {
+
+$usuario= New Usuario();
+$usuario->loadByid(1039);
+$usuario->update("Professor","9999");
+
 echo $usuario;
 
+//echo "vou fazer update";
+
+}
 
 
 ?>
