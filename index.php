@@ -41,12 +41,12 @@ echo $usuario;*/
 
 
 
-$executa=1;
+$executa=2;
 
-if($executa=0) { 
+if($executa==0) { 
 
 // inserindo usuario novo
-$aluno= New Usuario('Braga','tw234');
+$aluno= New Usuario('TentaDeletar','tr444');
 // como botei um metodo construtor em Usuario, basta refenciar
 // nao precisa usar 2 $aluno e etc abaixo
 //$aluno->setDeslogin('sp_SQL'); nao entra 
@@ -57,11 +57,11 @@ echo $aluno;
 
 // alterando um ususario
 
-if ($executa=1) {
+if ($executa==1) {
 
 $usuario= New Usuario();
-$usuario->loadByid(1039);
-$usuario->update("Professor","9999");
+$usuario->loadByid(1040);
+$usuario->update("NaoExclui","333");
 
 echo $usuario;
 
@@ -69,5 +69,15 @@ echo $usuario;
 
 }
 
+// EXCLUSAO DE REGISTRO
+
+if ($executa==2) {
+
+$usuario= New Usuario();
+$usuario->loadByid(1040);
+$usuario->delete();
+echo $usuario;
+
+}
 
 ?>

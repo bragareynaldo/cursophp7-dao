@@ -206,11 +206,27 @@ Class Usuario {
 
 		));
 
-
-
 	}
 
+	Public function delete(){
 
+		
+		$sql=New Sql();
+
+		$sql->query("DELETE FROM tb_usuarios WHERE idusuario=:ID",array(
+			':ID'=>$this->getIdusuario()
+
+
+		));
+
+
+        /// necessario porque na classe exibe valores(display do Regsitro) apos a exec do comando
+		$this->setIdusuario(0);
+		$this->setDeslogin("");
+		$this->setDessenha("");
+		$this->setDtcadastro(New Datetime());
+
+	}
 
 	// colocado ="" para nao se tornar obrigatorio o conteudo da variavel em referencia
 	// se nao tivesse forçaria a enviar um conteudo para executar o metodo __construct
